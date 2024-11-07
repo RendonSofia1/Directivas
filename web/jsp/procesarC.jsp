@@ -8,7 +8,9 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
+<%
 
+%>
 
 <!DOCTYPE html>
 <html>
@@ -30,23 +32,34 @@
                             <th scope="col">Autor</th>
                             <th scope="col">Páginas</th>
                             <th scope="col" >Año</th>
+                            <th scope="col" >Acciones</th>
                         </tr>
                     </thead>
                     <tbody >
 
                         <c:forEach var="libro" items="${sessionScope.libros}" varStatus="status">
                             <tr>
-                                <td>${status.index + 1}</td> <!-- Índice del elemento -->
-                                <td>${libro.nombre}</td>          <!-- Contenido del elemento -->
-                                <td>${libro.autor}</td>          <!-- Contenido del elemento -->
-                                <td>${libro.paginas}</td>          <!-- Contenido del elemento -->
-                                <td>${libro.anio}</td>          <!-- Contenido del elemento -->
+                                <td>${status.index + 1}</td> 
+                                <td>${libro.nombre}</td>          
+                                <td>${libro.autor}</td>          
+                                <td>${libro.paginas}</td>          
+                                <td>${libro.anio}</td>
+                                <td>
+                                    <form action="${pageContext.request.contextPath}/crear_xml_servlet" method="POST">
+                                        <input type="hidden" name="nombre" value="${libro.nombre}">
+                                        <input type="hidden" name="autor" value="${libro.autor}">
+                                        <input type="hidden" name="paginas" value="${libro.paginas}">
+                                        <input type="hidden" name="anio" value="${libro.anio}">
+                                        <button type="submit">Generar XML</button>
+                                    </form>
+                                </td>
+
                             </tr>
                         </c:forEach>
 
                         <c:if test="${empty sessionScope.libros}">
                             <tr>
-                                <td colspan="5">No se han agregado elementos todavía.</td>
+                                <td colspan="6">No se han agregado elementos todavía.</td>
                             </tr>
                         </c:if>
                     </tbody>
