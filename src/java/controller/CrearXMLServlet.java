@@ -68,7 +68,16 @@ public class CrearXMLServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        request.setCharacterEncoding("UTF-8");
+        
+        String paginas = request.getParameter("paginas");
+        String anio = request.getParameter("anio");
+        String id = request.getParameter("id");
+
+        String fileName = paginas.replace(" ", "") + anio.replace(" ", "") + id.replace(" ", "");
+        request.setAttribute("mensaje", fileName);
+        request.getRequestDispatcher("/jsp/verArchivo.jsp").forward(request, response);
+
     }
 
     /**
@@ -82,11 +91,14 @@ public class CrearXMLServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
+        request.setCharacterEncoding("UTF-8");
         // Leer datos del formulario
         String nombre = request.getParameter("nombre");
         String autor = request.getParameter("autor");
         String paginas = request.getParameter("paginas");
         String anio = request.getParameter("anio");
+        String id = request.getParameter("id");
 
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -116,19 +128,21 @@ public class CrearXMLServlet extends HttpServlet {
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
             DOMSource source = new DOMSource(document);
-            
-            String fileName = nombre.replace(" ", "") + anio.replace(" ", "");
+
+            String fileName = paginas.replace(" ", "") + anio.replace(" ", "") + id.replace(" ", "");
             System.out.println(fileName);
 
-            File file = new File("C:/Users/rendo/Documents/aux-netbeans/xmls/"+fileName+".xml");
+            File file = new File("C:/Users/rendo/Documents/NetBeansProjects/Directivas/web/xmls/" + fileName + ".xml");
             StreamResult result = new StreamResult(file);
             transformer.transform(source, result);
 
-            response.getWriter().println("Archivo XML creado con éxito en " + file.getAbsolutePath());
+            request.setAttribute("mensaje", "Archivo XML creado con éxito");
+            request.getRequestDispatcher("/jsp/procesarC.jsp").forward(request, response);
 
         } catch (ParserConfigurationException | TransformerException e) {
             e.printStackTrace();
-            response.getWriter().println("Ocurrió un error al crear el archivo XML." + e);
+            request.setAttribute("mensaje", "Error al crear XML");
+            request.getRequestDispatcher("/jsp/procesarC.jsp").forward(request, response);
         }
     }
 
